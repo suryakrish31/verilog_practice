@@ -20,14 +20,35 @@ module tb();
   initial begin : input_block
     clk <= 0;
     rstn <= 1;
-    num <= 0;
+    num <= 1;
     freq <= 0;
     
-    #40;
+    #45;
     rstn <= 0;
-    #10;
+    #40;
     rstn <= 1;
-  
+  	
+    #100;
+    num <= 2;
+    freq <= 0;
+    rstn <= 0;
+    #40;
+    rstn <= 1;
+    
+    #100;
+    num <= 2;
+    freq <= 1;
+    rstn <= 0;
+    #40;
+    rstn <= 1;
+    
+    #100;
+    num <= 4;
+    freq <= 2;
+    rstn <= 0;
+    #40;
+    rstn <= 1;
+    
     #1000;
     $finish;
   end
@@ -36,3 +57,4 @@ module tb();
     $dumpfile("surya.vcd");
     $dumpvars(0,tb);
   end
+endmodule;
