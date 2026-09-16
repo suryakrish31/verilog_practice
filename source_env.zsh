@@ -13,8 +13,8 @@ export VERILOG_PRACTICE_ROOT="$project_root"
 
 # Export flags as strings so child scripts such as eda can receive them.
 unset VERI_FLAGS COMPILE_FLAGS SIM_FALGS
-export VERI_FLAGS='--lint-only -Wall -Icommon -Idesigns -Wno-DECLFILENAME'
-export COMPILE_FLAGS='-g2012 -Icommon -Idesigns'
+export VERI_FLAGS='--lint-only -Wall -y common -Idesigns -Wno-DECLFILENAME'
+export COMPILE_FLAGS='-g2012 -ycommon -Y.sv -Idesigns'
 export SIM_FALGS=''
 
 printf 'Project Root: %s\n\n' "$project_root"

@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 // -----------------------------------------------------------------------------
 // Project      : Verilog Practice
 // Date         : 2026-09-15
@@ -7,8 +9,6 @@
 // Revision     : 1.0
 // Notes        : Inputs and Outputs are parameterized
 // -----------------------------------------------------------------------------
-
-`include "cb_functions.sv"
 
 module cb_mux2x1 #(
     parameter int WIDTH = 1
