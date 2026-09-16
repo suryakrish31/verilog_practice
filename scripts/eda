@@ -1,0 +1,91 @@
+#!/bin/zsh
+
+set -e
+
+project_root="${VERILOG_PRACTICE_ROOT:?VERILOG_PRACTICE_ROOT is not set}"
+
+usage() {
+    cat <<'EOF'
+Usage: eda <operation> [-t target] [files...]
+
+Operations:
+  -h       Show this help message
+  -lint    Lint files with Verilator
+  -compile Compile files with Icarus Verilog into build/<target>/sim.out
+  -sim     Run build/<target>/sim.out with vvp
+
+Options:
+  -t name  Target build directory name; required for -compile and -sim
+
+Tool flags are read from the project environment:
+  VERI_FLAGS
+  COMPILE_FLAGS
+  SIM_FALGS
+EOF
+}
+
+if (( $# == 0 )); then
+    usage
+    exit 1
+fi
+
+operation="$1"
+shift
+target=""
+source_files=()
+
+while (( $# > 0 )); do
+    case "$1" in
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        -t|--target)
+            if (( $# < 2 )); then
+                print -u2 'Error: -t requires a target name.'
+                exit 1
+            fi
+            target="$2"
+            shift 2
+            ;;
+        --)
+            shift
+            source_files+=("$@")
+            break
+            ;;
+        *)
+            source_files+=("$1")
+            shift
+            ;;
+    esac
+done
+
+case "$operation" in
+    -h|--help)
+        usage
+        ;;
+    -lint)
+        verilator ${(z)VERI_FLAGS} "${source_files[@]}"
+        ;;
+    -compile)
+        if [[ -z "$target" ]]; then
+            print -u2 'Error: -compile requires -t target.'
+            exit 1
+        fi
+        target_dir="$project_root/build/$target"
+        mkdir -p "$target_dir"
+        iverilog ${(z)COMPILE_FLAGS} -o "$target_dir/sim.out" "${source_files[@]}"
+        ;;
+    -sim)
+        if [[ -z "$target" ]]; then
+            print -u2 'Error: -sim requires -t target.'
+            exit 1
+        fi
+        vvp ${(z)SIM_FALGS} "$project_root/build/$target/sim.out"
+        ;;
+    *)
+        print -u2 "Unknown operation: $operation"
+        usage >&2
+        exit 1
+        ;;
+esac

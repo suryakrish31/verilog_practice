@@ -1,0 +1,6 @@
+# Ignore specific file patterns
+*.out
+
+# Ignore specific directories
+build/
+logs/

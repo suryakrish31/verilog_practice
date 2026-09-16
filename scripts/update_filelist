@@ -1,0 +1,20 @@
+#!/bin/zsh
+
+set -e
+
+project_root="${0:A:h:h}"
+common_dir="$project_root/common"
+file_list="$common_dir/common.f"
+
+tmp_file="$(mktemp)"
+trap 'rm -f "$tmp_file"' EXIT
+
+find "$common_dir" -maxdepth 1 -type f \( -name '*.sv' -o -name '*.v' \) ! -name 'cb_functions.sv' ! -name 'cb_constants.sv' -print \
+    | sort \
+    | sed "s#^$project_root/##" > "$tmp_file"
+
+mv "$tmp_file" "$file_list"
+trap - EXIT
+
+printf 'Updated %s\n' "$file_list"
+cat "$file_list"
